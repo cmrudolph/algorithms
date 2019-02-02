@@ -1,0 +1,1 @@
+char* multiply_long(char*, char*);
