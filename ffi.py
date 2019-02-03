@@ -37,7 +37,7 @@ class FFIWrapper:
         ffi = cffi.FFI()
         ffi.cdef(header)
         ffi.set_source(mod_name, source)
-        ffi.compile()
+        ffi.compile(verbose=True)
 
         # Load the module and return the 'lib' instance to the caller. This
         # means the caller cab invoke the C functions (from the header) on the
