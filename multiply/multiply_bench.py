@@ -2,8 +2,8 @@ import timeit
 
 
 def setup(ffi):
-    cstr1 = ffi.to_cstr("99999999999999999999")
-    cstr2 = ffi.to_cstr("99999999999999999999")
+    cstr1 = ffi.to_cstr("9" * 100)
+    cstr2 = ffi.to_cstr("9" * 100)
 
     return cstr1, cstr2
 
