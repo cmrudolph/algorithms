@@ -2,6 +2,7 @@ import cffi
 import importlib
 import os
 import sys
+import timeit
 
 
 class FFIWrapper:
@@ -37,7 +38,7 @@ class FFIWrapper:
         ffi = cffi.FFI()
         ffi.cdef(header)
         ffi.set_source(mod_name, source)
-        ffi.compile(verbose=True)
+        ffi.compile()
 
         # Load the module and return the 'lib' instance to the caller. This
         # means the caller cab invoke the C functions (from the header) on the
@@ -71,4 +72,26 @@ class FFIWrapper:
 
 
 if __name__ == "__main__":
-    w = FFIWrapper.create(sys.argv[1])
+    """
+    In its current, rough form, default to running a custom benchmark
+    function for the specified module. This has a lot of room for improvement,
+    but it lets us run code in a timed fashion for now.
+    """
+    short_name = sys.argv[1]
+    iterations = int(sys.argv[2])
+
+    print(f"Benchmarking {short_name} with {iterations} iterations")
+
+    ffi = FFIWrapper.create(short_name)
+
+    # Convention 1: Assume there is a file called [NAME]/[NAME]_bench.py.
+    mod_name = f"{short_name}.{short_name}_bench"
+    mod = importlib.import_module(mod_name)
+
+    # Convention 2: Assume there is a setup function to invoke.
+    setup_obj = mod.setup(ffi)
+
+    # Convention 3: Assume there is a benchmark function to invoke.
+    code = "mod.benchmark(ffi, setup_obj)"
+    setup = "from __main__ import setup_obj, mod, ffi"
+    print(timeit.timeit(code, setup=setup, number=int(iterations)))

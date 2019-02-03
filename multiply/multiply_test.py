@@ -2,7 +2,9 @@ def multiply_long(ffi, x_pstr, y_pstr):
     x_cstr = ffi.to_cstr(x_pstr)
     y_cstr = ffi.to_cstr(y_pstr)
     result_cstr = ffi.lib.multiply_long(x_cstr, y_cstr)
-    return ffi.to_pstr(result_cstr)
+    result = ffi.to_pstr(result_cstr);
+    ffi.lib.free(result_cstr)
+    return result
 
 
 def test_zero_both(ffi):
