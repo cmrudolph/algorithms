@@ -14,7 +14,7 @@ if __name__ == "__main__":
     short_name = sys.argv[1]
     iterations = int(sys.argv[2])
 
-    print(f"Benchmarking {short_name} with {iterations} iterations")
+    print(f"Benchmarking {short_name} cases with {iterations} iterations")
 
     wrapper = ffi.FFIWrapper.create(short_name)
 
@@ -25,7 +25,13 @@ if __name__ == "__main__":
     # Convention 2: Assume there is a setup function to invoke.
     setup_obj = mod.setup(wrapper)
 
-    # Convention 3: Assume there is a benchmark function to invoke.
-    code = "mod.benchmark(wrapper, setup_obj)"
-    setup = "from __main__ import setup_obj, mod, wrapper"
-    print(timeit.timeit(code, setup=setup, number=int(iterations)))
+    funcs = [f for f in dir(mod) if f.startswith("benchmark_")]
+    funcs.sort()
+
+    for f in funcs:
+        f_trimmed = f.replace("benchmark_", "")
+        # Convention 3: Assume there is a benchmark function to invoke.
+        code = f"mod.{f}(wrapper, setup_obj)"
+        setup = "from __main__ import setup_obj, mod, wrapper"
+        print(f"{f_trimmed:<25}: ", end="")
+        print(timeit.timeit(code, setup=setup, number=int(iterations)))

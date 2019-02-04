@@ -80,3 +80,16 @@ char *multiply_long(char *str1, char *str2)
 
     return result_str;
 }
+
+char *multiply_recursive(char *str1, char *str2)
+{
+    int len1 = strlen(str1);
+    int len2 = strlen(str2);
+    int result_len = len1 + len2;
+
+    int *result = alloc_zeroed(result_len);
+    char *result_str = int_array_to_numeric_string(result, result_len);
+    free(result);
+
+    return result_str;
+}
