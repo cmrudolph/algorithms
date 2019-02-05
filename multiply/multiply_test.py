@@ -9,7 +9,7 @@ def invoke(ffi, impl, x_pstr, y_pstr):
     x_cstr = ffi.to_cstr(x_pstr)
     y_cstr = ffi.to_cstr(y_pstr)
     result_cstr = impl(x_cstr, y_cstr)
-    result = ffi.to_pstr(result_cstr);
+    result = ffi.to_pstr(result_cstr)
     ffi.lib.free(result_cstr)
     return result
 
@@ -44,6 +44,10 @@ def test_odd_even_length(ffi, impl):
 
 def test_even_odd_length(ffi, impl):
     assert invoke(ffi, impl, "99", "9") == "891"
+
+
+def test_maxed_digits(ffi, impl):
+    assert invoke(ffi, impl, "99", "99") == "9801"
 
 
 def test_trailing_zeroes(ffi, impl):
