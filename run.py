@@ -1,27 +1,28 @@
 #!/usr/bin/env python3
 
+import argparse
 import ffi
 import importlib
+import logging
 import sys
 import timeit
+import wrapper
 
 if __name__ == "__main__":
-    x = int(sys.argv[1])
-    y = int(sys.argv[2])
-    wrapper = ffi.FFIWrapper.create("multiply")
-    mod = importlib.import_module("multiply.multiply")
-    mul = getattr(mod, "Multiply")
-    mul_inst = mul(wrapper)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("name")
+    parser.add_argument("func")
+    parser.add_argument("--verbose", action="store_true")
+    known, unknown = parser.parse_known_args()
 
-    func_long = getattr(mul_inst, "multiply_long_c")
-    result_long = func_long(x, y)
+    level = logging.DEBUG if known.verbose else logging.WARNING
+    logging.basicConfig(level=level)
+    log = logging.getLogger("run")
+    log.debug(f"Known args:{known}; unknown args:{unknown}")
 
-    func_rec = getattr(mul_inst, "multiply_recursive_c")
-    result_rec = func_rec(x, y)
+    wrapper = wrapper.WrapperFactory.create(known.name, True)
 
-    func_builtin = getattr(mul_inst, "multiply_builtin_py")
-    result_builtin = func_builtin(x, y)
+    func = getattr(wrapper, known.func)
+    result = func(*unknown)
 
-    print(f"LONG: {x} * {y} = {result_long}")
-    print(f"REC : {x} * {y} = {result_rec}")
-    print(f"PY  : {x} * {y} = {result_builtin}")
+    print(f"{known.name}.{known.func}({unknown}) --> {result}")

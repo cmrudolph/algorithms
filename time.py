@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 
+import argparse
 import ffi
 import importlib
+import logging
 import sys
 import timeit
+import wrapper
 
 if __name__ == "__main__":
     """
@@ -11,31 +14,36 @@ if __name__ == "__main__":
     function for the specified module. This has a lot of room for improvement,
     but it lets us run code in a timed fashion for now.
     """
-    short_name = sys.argv[1]
-    iterations = int(sys.argv[2])
+    parser = argparse.ArgumentParser()
+    parser.add_argument("name")
+    parser.add_argument("iterations", type=int)
+    parser.add_argument("--contains")
+    parser.add_argument("--verbose", action="store_true")
+    args = parser.parse_args()
 
-    print(f"Benchmarking {short_name} cases with {iterations} iterations")
+    level = logging.DEBUG if args.verbose else logging.WARNING
+    logging.basicConfig(level=level)
+    log = logging.getLogger("time")
+    log.debug(f"Args:{args}")
 
-    # C library sources (foo.c, foo.h)
-    ffi = ffi.FFIWrapper.create(short_name)
+    print(f"Benchmarking {args.name} cases with {args.iterations} iterations")
 
-    # PY wrapper module (foo.py)
-    mod = importlib.import_module(short_name + "." + short_name)
-
-    # PY wrapper class (foo.Foo)
-    wrapper_type = getattr(mod, short_name.title())
-    wrapper_inst = wrapper_type(ffi)
+    wrapper = wrapper.WrapperFactory.create(args.name, True)
 
     # Benchmark all non 'dunder' methods in the wrapper class
-    funcs = [f for f in dir(wrapper_type) if not f.startswith("__")]
-    print(funcs)
+    funcs = [f for f in dir(wrapper) if not f.startswith("_")]
     funcs.remove("get_benchmark_args")
     funcs.sort()
+    if args.contains is not None:
+        funcs = [f for f in funcs if args.contains in f]
+    log.debug(f"Funcs:{funcs}")
 
-    args = wrapper_inst.get_benchmark_args()
+    bench_args = wrapper.get_benchmark_args()
 
     for f in funcs:
-        code = f"wrapper_inst.{f}(*args)"
-        setup = "from __main__ import args, wrapper_inst"
-        print(f"{f:<25}: ", end="")
-        print(timeit.timeit(code, setup=setup, number=int(iterations)))
+        code = f"wrapper.{f}(*bench_args)"
+        setup = "from __main__ import bench_args, wrapper"
+        print(f"{f:<25} ", end="")
+        result = timeit.timeit(code, setup=setup, number=int(args.iterations))
+        ops_per_sec = int(args.iterations / result)
+        print(f"{result:.10f} sec {ops_per_sec:>15} ops/sec")

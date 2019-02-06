@@ -17,6 +17,9 @@ int_array *int_array_alloc_from_int(int value);
 int_array *int_array_alloc_from_string(char *str, int padded_length);
 void int_array_free(int_array *arr);
 void int_array_print(int_array *arr);
+char *multiply_long(char *str1, char *str2);
+int_array *multiply_recursive_internal(int_array *a1, int_array *a2, int off1, int off2, int len);
+char *multiply_recursive(char *str1, char *str2);
 
 char *cstr_alloc_from_int_array(int_array *arr)
 {

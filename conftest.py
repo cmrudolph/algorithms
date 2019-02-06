@@ -1,6 +1,7 @@
 import importlib
 import pytest
 from ffi import FFIWrapper
+from wrapper import WrapperFactory
 
 
 @pytest.fixture(scope="module")
@@ -18,15 +19,4 @@ def wrapper(request):
 
     # Test module (foo_test.py)
     mod_name = request.module.__name__.replace("_test", "")
-
-    # C library sources (foo.c, foo.h)
-    ffi = FFIWrapper.create(mod_name)
-
-    # PY wrapper module (foo.py)
-    mod = importlib.import_module(mod_name)
-
-    # PY wrapper class (foo.Foo)
-    wrapper_type = getattr(mod, mod_name.title())
-
-    # Construct and return PY wrapper instance (consumer facing artifact)
-    return wrapper_type(ffi)
+    return WrapperFactory.create(mod_name, False)

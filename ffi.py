@@ -1,5 +1,6 @@
 import cffi
 import importlib
+import logging
 import os
 
 
@@ -20,9 +21,15 @@ class FFIWrapper:
         Factory method that creates an instance by compiling the corresponding
         C code and returning a wrapper around that library.
         """
+        log = logging.getLogger("ffi")
+
         h_file = os.path.join(name, name + ".h")
         c_file = os.path.join(name, name + ".c")
         mod_name = "gen._" + name
+
+        log.debug(f"C header is {h_file}")
+        log.debug(f"C source is {c_file}")
+        log.debug(f"C generated module is {mod_name}")
 
         # Read the .h and .c files from disk. Our convention is to require that
         # the names of the files match the name of the module we are building.
@@ -33,6 +40,7 @@ class FFIWrapper:
 
         # Use CFFI to compile our header and source files into a library that
         # we can call into using the CFFI plumbing later.
+        log.debug("Compiling C code")
         ffi = cffi.FFI()
         ffi.cdef(header)
         ffi.set_source(mod_name, source)
@@ -41,6 +49,7 @@ class FFIWrapper:
         # Load the module and return the 'lib' instance to the caller. This
         # means the caller cab invoke the C functions (from the header) on the
         # instance with no other effort required.
+        log.debug("Importing generated C module")
         mod = importlib.import_module(mod_name)
         lib = mod.lib
 
