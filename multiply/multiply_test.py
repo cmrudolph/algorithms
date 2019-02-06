@@ -1,54 +1,51 @@
 import pytest
 
-@pytest.fixture(params=["multiply_long", "multiply_recursive"])
-def impl(ffi, request):
-    return getattr(ffi.lib, request.param)
+
+@pytest.fixture(params=[
+    "multiply_long_c",
+    "multiply_recursive_c",
+    "multiply_builtin_py"])
+def impl(wrapper, request):
+    # Given the module-specific wrapper, extract each of the test
+    # implementation functions that we want to invoke each case for
+    return getattr(wrapper, request.param)
 
 
-def invoke(ffi, impl, x_pstr, y_pstr):
-    x_cstr = ffi.to_cstr(x_pstr)
-    y_cstr = ffi.to_cstr(y_pstr)
-    result_cstr = impl(x_cstr, y_cstr)
-    result = ffi.to_pstr(result_cstr)
-    ffi.lib.free(result_cstr)
-    return result
+def test_zero_both(impl):
+    assert impl(0, 0) == 0
 
 
-def test_zero_both(ffi, impl):
-    assert invoke(ffi, impl, "0", "0") == "0"
+def test_zero_top(impl):
+    assert impl(0, 987654321) == 0
 
 
-def test_zero_top(ffi, impl):
-    assert invoke(ffi, impl, "0", "987654321") == "0"
+def test_zero_bottom(impl):
+    assert impl(987654321, 0) == 0
 
 
-def test_zero_bottom(ffi, impl):
-    assert invoke(ffi, impl, "987654321", "0") == "0"
+def test_identity_top(impl):
+    assert impl(1, 987654321) == 987654321
 
 
-def test_zero_padding(ffi, impl):
-    assert invoke(ffi, impl, "00", "00") == "0"
+def test_identity_bottom(impl):
+    assert impl(987654321, 1) == 987654321
 
 
-def test_identity_top(ffi, impl):
-    assert invoke(ffi, impl, "1", "987654321") == "987654321"
+def test_odd_even_length(impl):
+    assert impl(9, 99) == 891
 
 
-def test_identity_bottom(ffi, impl):
-    assert invoke(ffi, impl, "987654321", "1") == "987654321"
+def test_even_odd_length(impl):
+    assert impl(99, 9) == 891
 
 
-def test_odd_even_length(ffi, impl):
-    assert invoke(ffi, impl, "9", "99") == "891"
+def test_maxed_digits(impl):
+    assert impl(99, 99) == 9801
 
 
-def test_even_odd_length(ffi, impl):
-    assert invoke(ffi, impl, "99", "9") == "891"
+def test_trailing_zeroes(impl):
+    assert impl(10000, 10000) == 100000000
 
 
-def test_maxed_digits(ffi, impl):
-    assert invoke(ffi, impl, "99", "99") == "9801"
-
-
-def test_trailing_zeroes(ffi, impl):
-    assert invoke(ffi, impl, "10000", "10000") == "100000000"
+def test_big(impl):
+    assert impl(9999999999, 9999999999) == 99999999980000000001

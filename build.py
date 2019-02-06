@@ -12,4 +12,7 @@ if __name__ == "__main__":
 
     print(f"Compiling {short_name}")
 
-    wrapper = ffi.FFIWrapper.create(short_name)
+    try:
+        wrapper = ffi.FFIWrapper.create(short_name)
+    except:
+        pass

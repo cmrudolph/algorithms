@@ -16,22 +16,26 @@ if __name__ == "__main__":
 
     print(f"Benchmarking {short_name} cases with {iterations} iterations")
 
-    wrapper = ffi.FFIWrapper.create(short_name)
+    # C library sources (foo.c, foo.h)
+    ffi = ffi.FFIWrapper.create(short_name)
 
-    # Convention 1: Assume there is a file called [NAME]/[NAME]_bench.py.
-    mod_name = f"{short_name}.{short_name}_bench"
-    mod = importlib.import_module(mod_name)
+    # PY wrapper module (foo.py)
+    mod = importlib.import_module(short_name + "." + short_name)
 
-    # Convention 2: Assume there is a setup function to invoke.
-    setup_obj = mod.setup(wrapper)
+    # PY wrapper class (foo.Foo)
+    wrapper_type = getattr(mod, short_name.title())
+    wrapper_inst = wrapper_type(ffi)
 
-    funcs = [f for f in dir(mod) if f.startswith("benchmark_")]
+    # Benchmark all non 'dunder' methods in the wrapper class
+    funcs = [f for f in dir(wrapper_type) if not f.startswith("__")]
+    print(funcs)
+    funcs.remove("get_benchmark_args")
     funcs.sort()
 
+    args = wrapper_inst.get_benchmark_args()
+
     for f in funcs:
-        f_trimmed = f.replace("benchmark_", "")
-        # Convention 3: Assume there is a benchmark function to invoke.
-        code = f"mod.{f}(wrapper, setup_obj)"
-        setup = "from __main__ import setup_obj, mod, wrapper"
-        print(f"{f_trimmed:<25}: ", end="")
+        code = f"wrapper_inst.{f}(*args)"
+        setup = "from __main__ import args, wrapper_inst"
+        print(f"{f:<25}: ", end="")
         print(timeit.timeit(code, setup=setup, number=int(iterations)))
