@@ -8,9 +8,8 @@ from util.implementation import ImplementationFactory
 
 if __name__ == "__main__":
     """
-    In its current, rough form, default to running a custom benchmark
-    function for the specified module. This has a lot of room for improvement,
-    but it lets us run code in a timed fashion for now.
+    Executes a particular function many times, collecting timings and showing
+    metrics when finished.
     """
     parser = argparse.ArgumentParser()
     parser.add_argument("name")
