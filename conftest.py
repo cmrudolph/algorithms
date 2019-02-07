@@ -1,7 +1,5 @@
-import importlib
 import pytest
-from ffi import FFIWrapper
-from wrapper import WrapperFactory
+from util.implementation import ImplementationFactory
 
 
 @pytest.fixture(scope="module")
@@ -13,10 +11,10 @@ def wrapper(request):
     the convention for everyting to be properly wired up:
       - C module called 'foo' consisting of 'foo.h' and 'foo.c'
       - PY test file called 'foo_test.py'
-      - PY wrapper module called 'foo.py'
-      - PY wrapper class in wrapper called 'Foo'
+      - PY facade module called 'foo_facade.py'
+      - PY facade class in called 'FooFacade'
     """
 
     # Test module (foo_test.py)
     mod_name = request.module.__name__.replace("_test", "")
-    return WrapperFactory.create(mod_name, False)
+    return ImplementationFactory.create(mod_name, False)

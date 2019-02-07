@@ -4,7 +4,7 @@ import logging
 import os
 
 
-class FFIWrapper:
+class CLibraryFacade:
     """
     My own wrapper around the FFI functionality needed by my tests. This
     provides not only access to the C library, but also surfaces certain
@@ -16,30 +16,27 @@ class FFIWrapper:
         self._lib = lib
 
     @staticmethod
-    def create(name):
+    def compile_and_load(name):
         """
-        Factory method that creates an instance by compiling the corresponding
+        Factory method that creates an instance of the wrapper by locating
+        and compiling the C code for the given  by compiling the corresponding
         C code and returning a wrapper around that library.
         """
-        log = logging.getLogger("ffi")
+        log = logging.getLogger("CLibraryWrapper")
 
-        h_file = os.path.join(name, name + ".h")
-        c_file = os.path.join(name, name + ".c")
+        h_file = os.path.join("impl", name, name + ".h")
+        c_file = os.path.join("impl", name, name + ".c")
         mod_name = "gen._" + name
 
         log.debug(f"C header is {h_file}")
         log.debug(f"C source is {c_file}")
         log.debug(f"C generated module is {mod_name}")
 
-        # Read the .h and .c files from disk. Our convention is to require that
-        # the names of the files match the name of the module we are building.
         with open(h_file, "r") as f:
             header = f.read()
         with open(c_file, "r") as f:
             source = f.read()
 
-        # Use CFFI to compile our header and source files into a library that
-        # we can call into using the CFFI plumbing later.
         log.debug("Compiling C code")
         ffi = cffi.FFI()
         ffi.cdef(header)
@@ -48,12 +45,14 @@ class FFIWrapper:
 
         # Load the module and return the 'lib' instance to the caller. This
         # means the caller cab invoke the C functions (from the header) on the
-        # instance with no other effort required.
+        # instance with no other effort required. Everything from the header
+        # will be callable via 'lib'.
         log.debug("Importing generated C module")
         mod = importlib.import_module(mod_name)
         lib = mod.lib
 
-        return FFIWrapper(ffi, lib)
+        log.debug(f"Facade lib functions {dir(lib)}")
+        return CLibraryFacade(ffi, lib)
 
     def to_cstr(self, pstr):
         """
@@ -76,3 +75,6 @@ class FFIWrapper:
         through this instance.
         """
         return self._lib
+
+
+

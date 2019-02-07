@@ -2,9 +2,9 @@ import pytest
 
 
 @pytest.fixture(params=[
-    "multiply_long_c",
-    "multiply_recursive_c",
-    "multiply_builtin_py"])
+    "c_long",
+    "c_recursive",
+    "py_builtin"])
 def impl(wrapper, request):
     # Given the module-specific wrapper, extract each of the test
     # implementation functions that we want to invoke each case for

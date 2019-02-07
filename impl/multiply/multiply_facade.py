@@ -1,9 +1,13 @@
-class MultiplyWrapper:
+class MultiplyFacade:
+    """
+    Facade exposing all the necessary functionality to use this
+    implementation for testing/benchmarking purposes.
+    """
     def __init__(self, ffi_wrapper):
         self._wrapper = ffi_wrapper
         self._lib = ffi_wrapper.lib
 
-    def multiply_long_c(self, x, y):
+    def c_long(self, x, y):
         x_cstr = self._wrapper.to_cstr(str(x))
         y_cstr = self._wrapper.to_cstr(str(y))
         res_cstr = self._lib.multiply_long(x_cstr, y_cstr)
@@ -11,7 +15,7 @@ class MultiplyWrapper:
         self._lib.free(res_cstr)
         return res
 
-    def multiply_recursive_c(self, x, y):
+    def c_recursive(self, x, y):
         x_cstr = self._wrapper.to_cstr(str(x))
         y_cstr = self._wrapper.to_cstr(str(y))
         res_cstr = self._lib.multiply_recursive(x_cstr, y_cstr)
@@ -19,10 +23,11 @@ class MultiplyWrapper:
         self._lib.free(res_cstr)
         return res
 
-    def multiply_builtin_py(self, x, y):
+    def py_builtin(self, x, y):
         return int(x) * int(y)
 
-    def get_benchmark_args(self):
-        x = int("9" * 500)
-        y = int("9" * 500)
+    def create_benchmark_args(self, *args):
+        length = int(args[0])
+        x = int("9" * length)
+        y = int("9" * length)
         return x, y

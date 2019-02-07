@@ -1,14 +1,17 @@
 #!/usr/bin/env python3
 
 import argparse
-import ffi
 import importlib
 import logging
-import sys
-import timeit
-import wrapper
+from util.implementation import ImplementationFactory
+
 
 if __name__ == "__main__":
+    """
+    Ad-hoc runner that is able to consume certain known arguments to spin up
+    instances of whatever implementation/function we want to call and then
+    pass along the remaining args to said function.
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument("name")
     parser.add_argument("func")
@@ -18,9 +21,9 @@ if __name__ == "__main__":
     level = logging.DEBUG if known.verbose else logging.WARNING
     logging.basicConfig(level=level)
     log = logging.getLogger("run")
-    log.debug(f"Known args:{known}; unknown args:{unknown}")
+    log.debug(f"Known args are {known} and unknown args are {unknown}")
 
-    wrapper = wrapper.WrapperFactory.create(known.name, True)
+    wrapper = ImplementationFactory.create(known.name, True)
 
     func = getattr(wrapper, known.func)
     result = func(*unknown)

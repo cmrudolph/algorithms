@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
 import argparse
-import ffi
 import logging
 import sys
+from util.interop import CLibraryFacade
 
 if __name__ == "__main__":
     """
@@ -20,9 +20,9 @@ if __name__ == "__main__":
     log = logging.getLogger("build")
     log.debug(f"Args:{args}")
 
-    print(f"Compiling {args.name}")
+    print(f"Compiling C for {args.name}")
 
     try:
-        wrapper = ffi.FFIWrapper.create(args.name)
+        CLibraryFacade.compile_and_load(args.name)
     except:
         log.error(sys.exc_info()[0])
