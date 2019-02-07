@@ -47,5 +47,9 @@ def test_trailing_zeroes(impl):
     assert impl(10000, 10000) == 100000000
 
 
+def test_middle_zeroes(impl):
+    assert impl(10001, 10001) == 100020001
+
+
 def test_big(impl):
     assert impl(9999999999, 9999999999) == 99999999980000000001
