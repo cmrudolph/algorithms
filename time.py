@@ -34,7 +34,7 @@ if __name__ == "__main__":
 
     # Dynamically invoke the func under test passing in the benchmark
     # arguments that we computed ahead of time
-    code = f"facade.{known.func}(*bench_args)"
+    code = f"facade.{known.func}(bench_args)"
     setup = "from __main__ import bench_args, facade"
     sec = timeit.timeit(code, setup=setup, number=int(known.runs))
     ops = int(known.runs / sec)

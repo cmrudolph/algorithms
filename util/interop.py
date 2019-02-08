@@ -37,11 +37,12 @@ class CLibraryFacade:
         with open(c_file, "r") as f:
             source = f.read()
 
+        debug = log.getEffectiveLevel() == logging.DEBUG
         log.debug("Compiling C code")
         ffi = cffi.FFI()
         ffi.cdef(header)
         ffi.set_source(mod_name, source)
-        ffi.compile()
+        ffi.compile(verbose=debug)
 
         # Load the module and return the 'lib' instance to the caller. This
         # means the caller cab invoke the C functions (from the header) on the
@@ -67,6 +68,13 @@ class CLibraryFacade:
         encoding is assumed.
         """
         return self._ffi.string(cstr).decode('ascii')
+
+    def to_c_int_array(self, int_list):
+        return self._ffi.new("int[]", int_list)
+
+    def to_py_int_list(self, c_int_array, length):
+        return self._ffi.unpack(c_int_array, length)
+
 
     @property
     def lib(self):
