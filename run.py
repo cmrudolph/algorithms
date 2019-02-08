@@ -26,6 +26,9 @@ if __name__ == "__main__":
     wrapper = ImplementationFactory.create(known.name, True)
 
     func = getattr(wrapper, known.func)
-    result = func(*unknown)
+    run_args = wrapper.adapt_run_args(unknown)
+    log.debug(f"Run args {run_args}")
 
-    print(f"{known.name}.{known.func}({unknown}) --> {result}")
+    result = func(**run_args)
+
+    print(f"{known.name}.{known.func} --> {result}")

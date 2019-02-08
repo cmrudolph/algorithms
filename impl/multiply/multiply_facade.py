@@ -26,8 +26,17 @@ class MultiplyFacade:
     def py_builtin(self, x, y):
         return int(x) * int(y)
 
-    def create_benchmark_args(self, *args):
-        length = int(args[0])
-        x = int("9" * length)
-        y = int("9" * length)
-        return x, y
+    def adapt_run_args(self, raw_args):
+        # RUN: Echo back the two values to multply as-is
+        return {
+            "x": int(raw_args[0]),
+            "y": int(raw_args[1])
+        }
+
+    def adapt_benchmark_args(self, raw_args):
+        # BENCHMARK: Generate and return integers of length N
+        length = int(raw_args[0])
+        return {
+            "x": int("9" * length),
+            "y": int("9" * length)
+        }
