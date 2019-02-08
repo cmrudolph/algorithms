@@ -20,22 +20,21 @@ void mergesort_internal(int *src, int *dest, int len)
     int idx2 = 0;
     while (idx1 < len1 || idx2 < len2) {
         if (idx2 == len2) {
-            dest[i] = src1[idx1];
-            idx1++;
+            while (idx1 < len1) {
+                dest[i++] = src1[idx1++];
+            }
         }
         else if (idx1 == len1) {
-            dest[i] = src2[idx2];
-            idx2++;
+            while (idx2 < len2) {
+                dest[i++] = src2[idx2++];
+            }
         }
         else if (src1[idx1] < src2[idx2]) {
-            dest[i] = src1[idx1];
-            idx1++;
+            dest[i++] = src1[idx1++];
         }
         else {
-            dest[i] = src2[idx2];
-            idx2++;
+            dest[i++] = src2[idx2++];
         }
-        i++;
     }
 }
 
