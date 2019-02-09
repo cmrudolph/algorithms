@@ -43,6 +43,12 @@ if __name__ == "__main__":
     log.debug(f"Benchmark funcs {funcs}")
 
     for f in funcs:
+        # Warm up pass
+        code = f"facade.{f}(**bench_args)"
+        setup = "from __main__ import bench_args, facade"
+        timeit.timeit(code, setup=setup, number=int(1))
+
+    for f in funcs:
         # Dynamically invoke the func under test passing in the benchmark
         # arguments that we computed ahead of time
         code = f"facade.{f}(**bench_args)"

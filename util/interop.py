@@ -69,12 +69,11 @@ class CLibraryFacade:
         """
         return self._ffi.string(cstr).decode('ascii')
 
-    def to_c_int_array(self, int_list):
-        return self._ffi.new("int[]", int_list)
+    def to_c_array(self, c_type, py_list):
+        return self._ffi.new(c_type, py_list)
 
-    def to_py_int_list(self, c_int_array, length):
-        return self._ffi.unpack(c_int_array, length)
-
+    def to_py_list(self, c_array, length):
+        return self._ffi.unpack(c_array, length)
 
     @property
     def lib(self):
@@ -83,6 +82,3 @@ class CLibraryFacade:
         through this instance.
         """
         return self._lib
-
-
-
