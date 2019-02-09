@@ -4,37 +4,56 @@ import pytest
 @pytest.fixture(params=[
     "c_mergesort",
     "c_qsort_builtin",
-    "py_mergesort",
-    "py_builtin"])
+    "py_builtin",
+    "py_mergesort"])
 def impl(wrapper, request):
     # Given the module-specific wrapper, extract each of the test
     # implementation functions that we want to invoke each case for
     return getattr(wrapper, request.param)
 
 
-def test_empty(impl):
-    assert impl([]) == []
+def do_test(impl, actual, expected):
+    orig = actual[:]
+    result = impl(actual)
+
+    # Ensure original is not modified
+    assert actual == orig
+
+    # Ensure returned copy is sorted
+    assert result == expected
 
 
-def test_single(impl):
-    assert impl([888]) == [888]
+def test_zero_items(impl):
+    do_test(impl, [], [])
 
 
-def test_sorted(impl):
-    assert impl([1, 2, 3]) == [1, 2, 3]
+def test_one_item(impl):
+    do_test(impl, [1], [1])
 
 
-def test_reversed(impl):
-    assert impl([3, 2, 1]) == [1, 2, 3]
-
-
-def test_duplicates(impl):
-    assert impl([2, 1, 1, 2, 1]) == [1, 1, 1, 2, 2]
+def test_two_items(impl):
+    do_test(impl, [2, 1], [1, 2])
 
 
 def test_odd_length(impl):
-    assert impl([7, 3, 5]) == [3, 5, 7]
+    do_test(impl, [7, 3, 5], [3, 5, 7])
 
 
 def test_even_length(impl):
-    assert impl([4, 8, 6, 2]) == [2, 4, 6, 8]
+    do_test(impl, [4, 8, 6, 2], [2, 4, 6, 8])
+
+
+def test_already_sorted(impl):
+    do_test(impl, [1, 2, 3, 4, 5], [1, 2, 3, 4, 5])
+
+
+def test_reversed(impl):
+    do_test(impl, [5, 4, 3, 2, 1], [1, 2, 3, 4, 5])
+
+
+def test_duplicates(impl):
+    do_test(impl, [2, 1, 1, 2, 1], [1, 1, 1, 2, 2])
+
+
+def test_all_same(impl):
+    do_test(impl, [0, 0, 0, 0], [0, 0, 0, 0])
