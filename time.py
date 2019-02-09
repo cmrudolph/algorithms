@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
 import argparse
-import importlib
 import logging
-import timeit
 from util.implementation import ImplementationFactory
+from util.timing import time
+
 
 if __name__ == "__main__":
     """
@@ -25,36 +25,6 @@ if __name__ == "__main__":
 
     facade = ImplementationFactory.create(known.name, True)
 
-    # Benchmark arg generation is going to depend on the implementation being
-    # tested. This entry point must exist in all, but we do not know what
-    # inputs the implementations expect. Pass whatever unknown arguments
-    # we received along and trust the receiver to do something smart.
-    log.debug(f"Creating benchmark args with {unknown}")
-    bench_args = facade.adapt_benchmark_args(unknown)
-    log.debug(f"Benchmark args {bench_args}")
-
-    funcs = [f for f in dir(facade) if not f.startswith("_")]
-    funcs.remove("adapt_run_args")
-    funcs.remove("adapt_benchmark_args")
-
-    if known.func is not None:
-        funcs = [f for f in dir(facade) if f == known.func]
-
-    log.debug(f"Benchmark funcs {funcs}")
-
-    for f in funcs:
-        # Warm up pass
-        code = f"facade.{f}(**bench_args)"
-        setup = "from __main__ import bench_args, facade"
-        timeit.timeit(code, setup=setup, number=int(1))
-
-    for f in funcs:
-        # Dynamically invoke the func under test passing in the benchmark
-        # arguments that we computed ahead of time
-        code = f"facade.{f}(**bench_args)"
-        setup = "from __main__ import bench_args, facade"
-        sec = timeit.timeit(code, setup=setup, number=int(known.runs))
-        ops = int(known.runs / sec)
-        full = f"{known.name}.{f}"
-
-        print(f"{full:<30} {known.runs:<10} {sec:.10f} sec {ops:>15} ops/sec")
+    results = time(facade, known.name, known.runs, func=known.func, *unknown)
+    for r in results:
+        print(r)

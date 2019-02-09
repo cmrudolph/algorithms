@@ -1,14 +1,26 @@
 import pytest
+from util.timing import time
 
 
 @pytest.fixture(params=[
     "c_long",
     "c_recursive",
     "py_builtin"])
-def impl(wrapper, request):
-    # Given the module-specific wrapper, extract each of the test
+def impl(facade, request):
+    # Given the module-specific facade, extract each of the test
     # implementation functions that we want to invoke each case for
-    return getattr(wrapper, request.param)
+    return getattr(facade, request.param)
+
+
+@pytest.mark.parametrize("mode", [
+    "sorted",
+    "reversed",
+    "zero",
+    "random",
+    "foo"])
+def test_timing(facade, mode):
+    r = time(facade, "multiply", 1, 1)
+    assert len(r) == 3
 
 
 def test_zero_both(impl):

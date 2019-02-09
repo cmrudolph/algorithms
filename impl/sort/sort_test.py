@@ -1,4 +1,5 @@
 import pytest
+from util.timing import time
 
 
 @pytest.fixture(params=[
@@ -6,10 +7,10 @@ import pytest
     "c_qsort_builtin",
     "py_builtin",
     "py_mergesort"])
-def impl(wrapper, request):
-    # Given the module-specific wrapper, extract each of the test
+def impl(facade, request):
+    # Given the module-specific facade, extract each of the test
     # implementation functions that we want to invoke each case for
-    return getattr(wrapper, request.param)
+    return getattr(facade, request.param)
 
 
 def do_test(impl, actual, expected):
@@ -21,6 +22,16 @@ def do_test(impl, actual, expected):
 
     # Ensure returned copy is sorted
     assert result == expected
+
+
+@pytest.mark.parametrize("mode", [
+    "sorted",
+    "reversed",
+    "zero",
+    "random"])
+def test_timing(facade, mode):
+    r = time(facade, "sort", 1, mode, 5)
+    assert len(r) == 4
 
 
 def test_zero_items(impl):
