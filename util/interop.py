@@ -28,6 +28,11 @@ class CLibraryFacade:
         c_file = os.path.join("impl", name, name + ".c")
         mod_name = "gen._" + name
 
+        # We are not required to have any C implementations for a given
+        # algorithm. Gracefully handle this situation.
+        if not os.path.isfile(h_file) or not os.path.isfile(c_file):
+            return None
+
         log.debug(f"C header is {h_file}")
         log.debug(f"C source is {c_file}")
         log.debug(f"C generated module is {mod_name}")

@@ -32,8 +32,12 @@ class ImplementationFactory:
         log.debug(f"Locating facade type {facade_type}")
         inst_type = getattr(mod, facade_type)
 
-        log.debug(f"Instantiating facade type {facade_type}")
-        facade_inst = inst_type(ffi_wrapper)
+        if ffi_wrapper is not None:
+            log.debug(f"Instantiating facade type {facade_type} with C")
+            facade_inst = inst_type(ffi_wrapper)
+        else:
+            log.debug(f"Instantiating facade type {facade_type} without C")
+            facade_inst = inst_type()
 
         funcs = [f for f in dir(facade_inst) if not f.startswith("_")]
         log.debug(f"Facade functions {funcs}")
