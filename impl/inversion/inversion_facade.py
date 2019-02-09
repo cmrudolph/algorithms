@@ -11,7 +11,10 @@ class InversionFacade:
         return inversion.brute_force(arr)
 
     def py_recursive_merge(self, arr):
-        return inversion.recursive_merge(arr)
+        # We sort the array during the operation and do not want to mutate
+        # the original.
+        copy = arr[:]
+        return inversion.recursive_merge(copy)
 
     def adapt_run_args(self, raw_args):
         # RUN: Echo back the specified values as integers in a list

@@ -3,7 +3,8 @@ from util.timing import time
 
 
 @pytest.fixture(params=[
-    "py_brute_force"])
+    "py_brute_force",
+    "py_recursive_merge"])
 def impl(facade, request):
     # Given the module-specific facade, extract each of the test
     # implementation functions that we want to invoke each case for
