@@ -1,5 +1,5 @@
 import pytest
-import src.impl.multiply as multiply
+import impl.multiply as multiply
 
 
 @pytest.fixture(params=[

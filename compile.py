@@ -23,6 +23,6 @@ if __name__ == "__main__":
     print(f"Compiling C for {args.name}")
 
     try:
-        import_module(f"src.impl.{args.name}")
+        import_module(f"impl.{args.name}")
     except:
         log.error(exc_info()[0])

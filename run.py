@@ -22,7 +22,7 @@ if __name__ == "__main__":
     log = logging.getLogger("run")
     log.debug(f"Known args are {known} and unknown args are {unknown}")
 
-    mod = import_module(f"src.impl.{known.name}")
+    mod = import_module(f"impl.{known.name}")
 
     func = getattr(mod, known.func)
     run_args = mod.adapt_run_args(unknown)

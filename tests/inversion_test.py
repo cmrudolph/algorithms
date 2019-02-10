@@ -1,5 +1,5 @@
 import pytest
-import src.impl.inversion as inversion
+import impl.inversion as inversion
 
 
 @pytest.fixture(params=[

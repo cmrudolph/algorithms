@@ -3,7 +3,7 @@
 import logging
 from argparse import ArgumentParser
 from importlib import import_module
-from src.util.timing import time
+from util.timing import time
 
 
 if __name__ == "__main__":
@@ -23,7 +23,7 @@ if __name__ == "__main__":
     log = logging.getLogger("time")
     log.debug(f"Known args are {known} and unknown args are {unknown}")
 
-    mod = import_module(f"src.impl.{known.name}")
+    mod = import_module(f"impl.{known.name}")
 
     results = time(mod, known.name, known.runs, func=known.func, *unknown)
     for r in results:

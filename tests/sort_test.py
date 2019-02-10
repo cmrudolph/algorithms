@@ -1,5 +1,5 @@
 import pytest
-import src.impl.sort as sort
+import impl.sort as sort
 
 
 @pytest.fixture(params=[
