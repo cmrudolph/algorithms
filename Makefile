@@ -5,3 +5,4 @@ clean:
 	rm -rf gen
 	rm -rf htmlcov
 	rm -f .coverage
+	rm -rf .pytest_cache

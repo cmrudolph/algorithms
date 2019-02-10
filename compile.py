@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 
-import argparse
 import logging
-import sys
-from util.interop import CLibraryFacade
+from argparse import ArgumentParser
+from sys import exc_info
+from importlib import import_module
 
 if __name__ == "__main__":
     """
     In its current, rough form, default to just building the specified test
     case (verify compilation succeeds).
     """
-    parser = argparse.ArgumentParser()
+    parser = ArgumentParser()
     parser.add_argument("name")
     parser.add_argument("--verbose", action="store_true")
     args = parser.parse_args()
@@ -23,6 +23,6 @@ if __name__ == "__main__":
     print(f"Compiling C for {args.name}")
 
     try:
-        CLibraryFacade.compile_and_load(args.name)
+        import_module(f"src.impl.{args.name}")
     except:
-        log.error(sys.exc_info()[0])
+        log.error(exc_info()[0])
