@@ -3,7 +3,6 @@ attrs==18.2.0
 cffi==1.11.5
 coverage==4.5.2
 more-itertools==5.0.0
-pkg-resources==0.0.0
 pluggy==0.8.1
 py==1.7.0
 pycodestyle==2.5.0
