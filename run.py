@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
+import argparse
+import importlib
 import logging
-from argparse import ArgumentParser
-from importlib import import_module
 
 
 if __name__ == "__main__":
@@ -11,7 +11,7 @@ if __name__ == "__main__":
     instances of whatever implementation/function we want to call and then
     pass along the remaining args to said function.
     """
-    parser = ArgumentParser()
+    parser = argparse.ArgumentParser()
     parser.add_argument("name")
     parser.add_argument("func")
     parser.add_argument("--verbose", action="store_true")
@@ -22,7 +22,7 @@ if __name__ == "__main__":
     log = logging.getLogger("run")
     log.debug(f"Known args are {known} and unknown args are {unknown}")
 
-    mod = import_module(f"impl.{known.name}")
+    mod = importlib.import_module(f"impl.{known.name}")
 
     func = getattr(mod, known.func)
     run_args = mod.adapt_run_args(unknown)

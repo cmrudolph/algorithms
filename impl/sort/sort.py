@@ -1,21 +1,10 @@
-import importlib
+import os
 import random
-from os.path import dirname
-from os.path import join
-from cffi import FFI
+import util
 
-h_file = join(dirname(__file__), "sort.h")
-c_file = join(dirname(__file__), "sort.c")
-
-mod_name = "gen._sort"
-
-ffi = FFI()
-ffi.cdef(open(h_file).read())
-ffi.set_source(mod_name, open(c_file).read())
-ffi.compile()
-
-mod = importlib.import_module(mod_name)
-lib = mod.lib
+h_file = os.path.join(os.path.dirname(__file__), "sort.h")
+c_file = os.path.join(os.path.dirname(__file__), "sort.c")
+(ffi, lib) = util.compile("sort", h_file, c_file)
 
 
 def c_mergesort(arr):
