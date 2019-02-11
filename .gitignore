@@ -117,3 +117,6 @@ dmypy.json
 
 # Generated artifacts from our CFFI process
 /gen
+
+Release
+.idea
