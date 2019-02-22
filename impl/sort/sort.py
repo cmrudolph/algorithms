@@ -21,6 +21,13 @@ def c_qsort_builtin(arr):
     return result
 
 
+def c_quicksort(arr):
+    c_arr = ffi.new("int[]", arr)
+    lib.quicksort(c_arr, len(arr))
+    result = ffi.unpack(c_arr, len(arr))
+    return result
+
+
 def py_mergesort(arr):
     result = arr[:]
     mergesort(result)

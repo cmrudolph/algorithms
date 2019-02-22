@@ -56,3 +56,7 @@ void qsort_builtin(int *arr, int len)
 {
     qsort(arr, len, sizeof(int), cmpfunc);
 }
+
+void quicksort(int *arr, int len)
+{
+}

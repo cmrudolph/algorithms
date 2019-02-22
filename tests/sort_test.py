@@ -5,6 +5,7 @@ import impl.sort as sort
 @pytest.fixture(params=[
     "c_mergesort",
     "c_qsort_builtin",
+    "c_quicksort",
     "py_builtin",
     "py_mergesort"])
 def sut(request):
@@ -48,11 +49,3 @@ def test_already_sorted(sut):
 
 def test_reversed(sut):
     do_test(sut, [5, 4, 3, 2, 1], [1, 2, 3, 4, 5])
-
-
-def test_duplicates(sut):
-    do_test(sut, [2, 1, 1, 2, 1], [1, 1, 1, 2, 2])
-
-
-def test_all_same(sut):
-    do_test(sut, [0, 0, 0, 0], [0, 0, 0, 0])
