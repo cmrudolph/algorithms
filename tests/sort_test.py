@@ -49,3 +49,11 @@ def test_already_sorted(sut):
 
 def test_reversed(sut):
     do_test(sut, [5, 4, 3, 2, 1], [1, 2, 3, 4, 5])
+
+
+def test_random(sut):
+    orig = [13, 17, 6, 18, 20, 10, 15, 3, 8, 2,\
+            11, 4, 16, 19, 12, 7, 14, 9, 1, 5]
+    expected = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10,\
+                11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+    do_test(sut, orig, expected)

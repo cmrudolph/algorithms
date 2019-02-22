@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 void mergesort_internal(int *src, int *dest, int len)
 {
     if (len <= 1) {
@@ -57,6 +59,39 @@ void qsort_builtin(int *arr, int len)
     qsort(arr, len, sizeof(int), cmpfunc);
 }
 
+void swap(int *x, int *y)
+{
+    int tmp = *x;
+    *x = *y;
+    *y = tmp;
+}
+
+int partition(int *arr, int len, int pivot_idx)
+{
+    int pivot = arr[0];
+    int i = 1;
+    for (int j = 1; j < len; j++) {
+        if (arr[j] < pivot) {
+            swap(&arr[j], &arr[i]);
+            i++;
+        }
+    }
+
+    swap(&arr[0], &arr[i-1]);
+    return i-1;
+}
+
 void quicksort(int *arr, int len)
 {
+    if (len <= 1) {
+        return;
+    }
+
+    // Select the pivot at random to produce a more consistent result
+    int pivot_idx = rand() % len;
+    swap(&arr[0], &arr[pivot_idx]);
+
+    int divider = partition(arr, len, pivot_idx);
+    quicksort(arr, divider);
+    quicksort(arr + divider + 1, len - divider - 1);
 }
