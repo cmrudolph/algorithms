@@ -66,7 +66,7 @@ void swap(int *x, int *y)
     *y = tmp;
 }
 
-int partition(int *arr, int len, int pivot_idx)
+int partition(int *arr, int len)
 {
     int pivot = arr[0];
     int i = 1;
@@ -91,7 +91,7 @@ void quicksort(int *arr, int len)
     int pivot_idx = rand() % len;
     swap(&arr[0], &arr[pivot_idx]);
 
-    int divider = partition(arr, len, pivot_idx);
+    int divider = partition(arr, len);
     quicksort(arr, divider);
     quicksort(arr + divider + 1, len - divider - 1);
 }
