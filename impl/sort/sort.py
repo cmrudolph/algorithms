@@ -92,27 +92,38 @@ def mergesort(arr):
             idx2 += 1
 
 
-def partition(arr):
-    pivot = arr[0]
-    i = 1
-    for j in range(1, len(arr)):
+def partition(arr, length, offset):
+    pivot = arr[offset]
+    i = offset + 1
+    for j in range(offset + 1, offset + length):
         if arr[j] < pivot:
             arr[i], arr[j] = arr[j], arr[i]
             i += 1
-    arr[0], arr[i-1] = arr[i-1], arr[0]
+    arr[offset], arr[i-1] = arr[i-1], arr[offset]
     return i-1
 
 
-def quicksort(arr):
-    if len(arr) <= 1:
-        return arr
+def quicksort_internal(arr, length, offset):
+    if length <= 1:
+        return
 
     # Select the pivot at random to produce a more consistent result
-    pivot_idx = random.randint(0, len(arr)-1)
-    arr[0], arr[pivot_idx] = arr[pivot_idx], arr[0]
+    pivot_idx = random.randint(offset, offset + length - 1)
+    arr[offset], arr[pivot_idx] = arr[pivot_idx], arr[offset]
 
-    divider = partition(arr)
-    arr[0:divider] = quicksort(arr[0:divider])
-    arr[divider+1:] = quicksort(arr[divider+1:])
+    divider = partition(arr, length, offset)
 
-    return arr
+    # Segment left of the pivot
+    l_len = divider - offset
+    l_offset = offset
+
+    # Segment right of the pivot
+    r_len = length - divider + offset - 1
+    r_offset = divider + 1
+
+    quicksort_internal(arr, l_len, l_offset)
+    quicksort_internal(arr, r_len, r_offset)
+
+
+def quicksort(arr):
+    quicksort_internal(arr, len(arr), 0)
