@@ -7,7 +7,8 @@ import impl.sort as sort
     "c_qsort_builtin",
     "c_quicksort",
     "py_builtin",
-    "py_mergesort"])
+    "py_mergesort",
+    "py_quicksort"])
 def sut(request):
     return getattr(sort, request.param)
 
@@ -52,8 +53,8 @@ def test_reversed(sut):
 
 
 def test_random(sut):
-    orig = [13, 17, 6, 18, 20, 10, 15, 3, 8, 2,\
+    orig = [13, 17, 6, 18, 20, 10, 15, 3, 8, 2,
             11, 4, 16, 19, 12, 7, 14, 9, 1, 5]
-    expected = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10,\
+    expected = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
                 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
     do_test(sut, orig, expected)

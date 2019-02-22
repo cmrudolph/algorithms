@@ -28,15 +28,21 @@ def c_quicksort(arr):
     return result
 
 
+def py_builtin(arr):
+    result = arr[:]
+    result.sort()
+    return result
+
+
 def py_mergesort(arr):
     result = arr[:]
     mergesort(result)
     return result
 
 
-def py_builtin(arr):
+def py_quicksort(arr):
     result = arr[:]
-    result.sort()
+    quicksort(result)
     return result
 
 
@@ -84,3 +90,29 @@ def mergesort(arr):
         else:
             arr[i] = h2[idx2]
             idx2 += 1
+
+
+def partition(arr):
+    pivot = arr[0]
+    i = 1
+    for j in range(1, len(arr)):
+        if arr[j] < pivot:
+            arr[i], arr[j] = arr[j], arr[i]
+            i += 1
+    arr[0], arr[i-1] = arr[i-1], arr[0]
+    return i-1
+
+
+def quicksort(arr):
+    if len(arr) <= 1:
+        return arr
+
+    # Select the pivot at random to produce a more consistent result
+    pivot_idx = random.randint(0, len(arr)-1)
+    arr[0], arr[pivot_idx] = arr[pivot_idx], arr[0]
+
+    divider = partition(arr)
+    arr[0:divider] = quicksort(arr[0:divider])
+    arr[divider+1:] = quicksort(arr[divider+1:])
+
+    return arr
