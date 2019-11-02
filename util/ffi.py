@@ -9,7 +9,7 @@ def compile(name, header, source):
     ffi.set_source(
         mod_name,
         open(source).read(),
-        extra_compile_args=['-O3', '-march=native', '-ffast-math'])
+        extra_compile_args=['-O3', '-march=native', '-ffast-math', '-std=c99'])
     ffi.compile()
 
     mod = importlib.import_module(mod_name)
