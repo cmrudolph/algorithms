@@ -4,6 +4,8 @@ import impl.sort as sort
 
 
 @pytest.fixture(params=[
+    "c_bubblesort",
+    "c_insertionsort",
     "c_mergesort",
     "c_qsort_builtin",
     "c_quicksort",

@@ -6,6 +6,19 @@ h_file = os.path.join(os.path.dirname(__file__), "sort.h")
 c_file = os.path.join(os.path.dirname(__file__), "sort.c")
 (ffi, lib) = util.compile("sort", h_file, c_file)
 
+def c_bubblesort(arr):
+    c_arr = ffi.new("int[]", arr)
+    lib.bubblesort(c_arr, len(arr))
+    result = ffi.unpack(c_arr, len(arr))
+    return result
+
+
+def c_insertionsort(arr):
+    c_arr = ffi.new("int[]", arr)
+    lib.insertionsort(c_arr, len(arr))
+    result = ffi.unpack(c_arr, len(arr))
+    return result
+
 
 def c_mergesort(arr):
     c_arr = ffi.new("int[]", arr)

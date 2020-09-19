@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include <stdlib.h>
 
 void mergesort_internal(int *src, int *dest, int len)
@@ -37,6 +38,48 @@ void mergesort_internal(int *src, int *dest, int len)
         else {
             dest[i++] = src2[idx2++];
         }
+    }
+}
+
+void bubblesort(int *arr, int len)
+{
+    for (int i = 0; i < len; i++)
+    {
+        bool swapped = false;
+
+        for (int j = 0; j < len - 1; j++)
+        {
+            if (arr[j] > arr[j+1])
+            {
+                int temp = arr[j];
+                arr[j] = arr[j+1];
+                arr[j+1] = temp;
+                swapped = true;
+            }
+        }
+
+        if (!swapped)
+        {
+            // Short-circuit the operation if no swaps were performed. This means we ended up
+            // with a sorted list (potentially) early.
+            break;
+        }
+    }
+}
+
+void insertionsort(int *arr, int len)
+{
+    for (int i = 1; i < len; i++)
+    {
+        int curr = arr[i];
+        int j = i - 1;
+
+        while (j >= 0 && arr[j] > curr)
+        {
+            arr[j + 1] = arr[j];
+            j = j - 1;
+        }
+        arr[j + 1] = curr;
     }
 }
 
