@@ -1,4 +1,4 @@
-[![Build Status](https://semaphoreci.com/api/v1/cmrudolph/algorithms/branches/master/badge.svg)](https://semaphoreci.com/cmrudolph/algorithms)
+[![Build Status](https://cmrudolph.semaphoreci.com/badges/algorithms/branches/master.svg)](https://cmrudolph.semaphoreci.com/projects/algorithms)
 
 # algorithms
 An attempt to revisit the "glory days" of my CS education by tinkering with various data structures and algorithms. The intent is to write the performance-critical code in C (side benefit being that I get to see if I remember how to do anything in C...), but to use Python + CFFI to simplify invoking/testing/benchmarking or when the implementation in Python is reasonable enough.
